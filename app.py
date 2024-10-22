@@ -12,33 +12,42 @@ from vanna_calls import (
     is_sql_valid_cached,
     generate_summary_cached
 )
-
+# from vanna_calls import setup_vanna, generate_questions_cached, generate_sql_cached, run_sql_cached, generate_plotly_code_cached, generate_plot_cached, generate_followup_cached, should_generate_chart_cached, is_sql_valid_cached, generate_summary_cached
 avatar_url = "Images/logo2.png"
 
 st.set_page_config(layout="wide")
+
+
+
+# # Initialize Vanna
+# vanna = setup_vanna()
+
+# if not vanna:
+#     st.error("Failed to initialize Vanna. Please check your connection and try again.")
+#     st.stop()
 # Initialize Supabase client
-SUPABASE_URL = st.secrets.get("SUPABASE_URL")
-SUPABASE_KEY = st.secrets.get("SUPABASE_KEY")
+# SUPABASE_URL = st.secrets.get("SUPABASE_URL")
+# SUPABASE_KEY = st.secrets.get("SUPABASE_KEY")
 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+# supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-try:
-    # Test the connection
-    # response = supabase.table('aki').select('customerid').execute()
-    # st.write("Connection successful:", response.data)
-    response = supabase.table('aki')
-    st.write("Connection successful:")
-except Exception as e:
-    st.error(f"Failed to connect to Supabase: {str(e)}")
+# try:
+#     # Test the connection
+#     # response = supabase.table('aki').select('customerid').execute()
+#     # st.write("Connection successful:", response.data)
+#     response = supabase.table('aki')
+#     st.write("Connection successful:")
+# except Exception as e:
+#     st.error(f"Failed to connect to Supabase: {str(e)}")
 
     
-def login_user(email, password):
-    try:
-        response = supabase.auth.sign_in_with_password({"email": email, "password": password})
-        return response
-    except Exception as e:
-        st.error(f"Login failed: {e}")
-        return None
+# def login_user(email, password):
+#     try:
+#         response = supabase.auth.sign_in_with_password({"email": email, "password": password})
+#         return response
+#     except Exception as e:
+#         st.error(f"Login failed: {e}")
+#         return None
 
 st.sidebar.title("Output Settings")
 st.sidebar.checkbox("Show SQL", value=True, key="show_sql")
@@ -70,6 +79,22 @@ if assistant_message_suggested.button("Click to show suggested questions"):
             on_click=set_question,
             args=(question,),
         )
+
+# assistant_message_suggested = st.chat_message("assistant", avatar=avatar_url)
+# if assistant_message_suggested.button("Click to show suggested questions"):
+#     st.session_state["my_question"] = None
+#     with st.spinner("Generating sample questions..."):
+#         questions = generate_questions_cached()
+#     if questions:
+#         for i, question in enumerate(questions):
+#             button = st.button(
+#                 question,
+#                 on_click=set_question,
+#                 args=(question,),
+#             )
+#     else:
+#         st.warning("No suggested questions available. You can still ask your own questions.")
+
 
 my_question = st.session_state.get("my_question", default=None)
 
