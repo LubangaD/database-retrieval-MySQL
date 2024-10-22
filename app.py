@@ -13,7 +13,7 @@ from vanna_calls import (
     generate_summary_cached
 )
 # from vanna_calls import setup_vanna, generate_questions_cached, generate_sql_cached, run_sql_cached, generate_plotly_code_cached, generate_plot_cached, generate_followup_cached, should_generate_chart_cached, is_sql_valid_cached, generate_summary_cached
-avatar_url = "Images/logo2.png"
+avatar_url = "images/logo2.png"
 
 st.set_page_config(layout="wide")
 
