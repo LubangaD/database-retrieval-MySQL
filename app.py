@@ -12,42 +12,14 @@ from vanna_calls import (
     is_sql_valid_cached,
     generate_summary_cached
 )
-# from vanna_calls import setup_vanna, generate_questions_cached, generate_sql_cached, run_sql_cached, generate_plotly_code_cached, generate_plot_cached, generate_followup_cached, should_generate_chart_cached, is_sql_valid_cached, generate_summary_cached
+
 avatar_url = "images/logo2.png"
 
 st.set_page_config(layout="wide")
 
-
-
-# # Initialize Vanna
-# vanna = setup_vanna()
-
-# if not vanna:
-#     st.error("Failed to initialize Vanna. Please check your connection and try again.")
-#     st.stop()
-# Initialize Supabase client
-# SUPABASE_URL = st.secrets.get("SUPABASE_URL")
-# SUPABASE_KEY = st.secrets.get("SUPABASE_KEY")
-
-# supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-# try:
-#     # Test the connection
-#     # response = supabase.table('aki').select('customerid').execute()
-#     # st.write("Connection successful:", response.data)
-#     response = supabase.table('aki')
-#     st.write("Connection successful:")
-# except Exception as e:
-#     st.error(f"Failed to connect to Supabase: {str(e)}")
-
-    
-# def login_user(email, password):
-#     try:
-#         response = supabase.auth.sign_in_with_password({"email": email, "password": password})
-#         return response
-#     except Exception as e:
-#         st.error(f"Login failed: {e}")
-#         return None
+# Initialize chat history in session state if it doesn't exist
+if "chat_history" not in st.session_state:
+    st.session_state["chat_history"] = []
 
 st.sidebar.title("Output Settings")
 st.sidebar.checkbox("Show SQL", value=True, key="show_sql")
@@ -58,13 +30,18 @@ st.sidebar.checkbox("Show Summary", value=True, key="show_summary")
 st.sidebar.checkbox("Show Follow-up Questions", value=True, key="show_followup")
 st.sidebar.button("Reset", on_click=lambda: set_question(None), use_container_width=True)
 
-st.title("Retriever")
-# st.sidebar.write(st.session_state)
+# Display chat history in sidebar
+st.sidebar.title("Chat History")
+for message in st.session_state["chat_history"]:
+    if message["type"] == "user":
+        st.sidebar.markdown(f"**User:** {message['content']}")
+    else:
+        st.sidebar.markdown(f"**Assistant:** {message['content']}")
 
+st.title("Retriever")
 
 def set_question(question):
     st.session_state["my_question"] = question
-
 
 assistant_message_suggested = st.chat_message(
     "assistant", avatar=avatar_url
@@ -80,22 +57,6 @@ if assistant_message_suggested.button("Click to show suggested questions"):
             args=(question,),
         )
 
-# assistant_message_suggested = st.chat_message("assistant", avatar=avatar_url)
-# if assistant_message_suggested.button("Click to show suggested questions"):
-#     st.session_state["my_question"] = None
-#     with st.spinner("Generating sample questions..."):
-#         questions = generate_questions_cached()
-#     if questions:
-#         for i, question in enumerate(questions):
-#             button = st.button(
-#                 question,
-#                 on_click=set_question,
-#                 args=(question,),
-#             )
-#     else:
-#         st.warning("No suggested questions available. You can still ask your own questions.")
-
-
 my_question = st.session_state.get("my_question", default=None)
 
 if my_question is None:
@@ -103,9 +64,12 @@ if my_question is None:
         "Ask me a question about your data",
     )
 
-
 if my_question:
     st.session_state["my_question"] = my_question
+
+    # Add user message to chat history
+    st.session_state["chat_history"].append({"type": "user", "content": my_question})
+
     user_message = st.chat_message("user")
     user_message.write(f"{my_question}")
 
@@ -118,11 +82,15 @@ if my_question:
                     "assistant", avatar=avatar_url
                 )
                 assistant_message_sql.code(sql, language="sql", line_numbers=True)
+
+                # Add SQL to chat history
+                st.session_state["chat_history"].append({"type": "assistant", "content": sql})
         else:
             assistant_message = st.chat_message(
                 "assistant", avatar=avatar_url
             )
             assistant_message.write(sql)
+            st.session_state["chat_history"].append({"type": "assistant", "content": sql})
             st.stop()
 
         df = run_sql_cached(sql=sql)
@@ -200,3 +168,4 @@ if my_question:
             "assistant", avatar=avatar_url
         )
         assistant_message_error.error("I wasn't able to generate SQL for that question")
+        st.session_state["chat_history"].append({"type": "assistant", "content": "I wasn't able to generate SQL for that question"})
