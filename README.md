@@ -27,7 +27,6 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Here’s the revised text with each instruction on a new line:
 
 ---
 
