@@ -19,7 +19,7 @@ The application is tailored for insurance data but can be adapted for other SQL 
 ## Install
 
 ```bash
-cd git clone https://github.com/LubangaD/database-retrieval-MySQL.git
+git clone https://github.com/LubangaD/database-retrieval-MySQL.git
 cd vanna-streamlit
 python3 -m venv venv
 source venv/bin/activate
@@ -27,12 +27,17 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Configure
-Modify the `setup_vanna` function in [vanna_calls.py](./vanna_calls.py) to use your desired Vanna setup.
-create a vanna account and get create a model which you will use and get its api key. Alternatively you can train the model using
-you database structure using DDL statements, SQl statements and database documentation.
+Here’s the revised text with each instruction on a new line:
 
-You can configure secrets in `.streamlit/secrets.toml` and access them in your app using `st.secrets.get(...)`.
+---
+
+## Configure
+
+- Modify the `setup_vanna` function in [vanna_calls.py](./vanna_calls.py) to use your desired Vanna setup.
+- Create a Vanna account and set up a model, obtaining its API key. Alternatively, you can train the model with your database structure using DDL statements, SQL statements, and database documentation.
+- Configure secrets in `.streamlit/secrets.toml` and access them in your app using `st.secrets.get(...)`.
+
+---
 
 
 ## Run
