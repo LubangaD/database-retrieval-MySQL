@@ -46,4 +46,5 @@ Here’s the revised text with each instruction on a new line:
 streamlit run app.py
 ```
 
-
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
